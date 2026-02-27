@@ -1,0 +1,170 @@
+{% extends "account/base.html" %}
+{% load static %}
+
+{% block title %}Profile Settings - Change Password{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+
+        <!-- LEFT SIDEBAR (Settings Menu) -->
+        <div class="col-lg-3 mb-4">
+          <div class="card shadow-sm border-0 rounded-4">
+              <div class="card-body p-3">
+
+                  <!-- User Info -->
+                  <div class="text-center mb-4">
+                      {% if user.socialaccount_set.all.0.extra_data.picture %}
+                          <img src="{{ user.socialaccount_set.all.0.extra_data.picture }}"
+                               class="rounded-circle shadow mb-2"
+                               width="80" height="80" alt="profile">
+                      {% else %}
+                          <img src="https://img.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3383.jpg"
+                               class="rounded-circle shadow mb-2"
+                               width="80" height="80" alt="profile">
+                      {% endif %}
+                      <h6 class="fw-bold mb-0">{{ user.email }}</h6>
+                      <small class="text-muted">Account Settings</small>
+                  </div>
+
+                  <hr>
+
+                  <!-- Settings Menu -->
+                  <div class="list-group list-group-flush">
+                    <a href="{% url 'account-setting' %}"
+                       class="list-group-item list-group-item-action rounded-3 mb-2">
+                        👤 Personal Details
+                    </a>
+
+                    <a href="{% url 'change-password' %}"
+                       class="list-group-item list-group-item-action rounded-3 mb-2 ">
+                        🔒 Change Password
+                    </a>
+
+                    <a href="{% url 'mfa' %}"
+                       class="list-group-item list-group-item-action rounded-3 active">
+                        🛡️ MFA / 2FA Security
+                    </a>
+                </div>
+
+              </div>
+          </div>
+      </div>
+
+
+        <!-- RIGHT CONTENT (Password Form) -->
+        <!-- RIGHT CONTENT (MFA ONLY) -->
+<div class="col-lg-9">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-4 p-md-5">
+
+            {% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+        <div class="alert 
+            {% if message.tags == 'success' %}alert-success
+            {% elif message.tags == 'error' %}alert-danger
+            {% elif message.tags == 'warning' %}alert-warning
+            {% else %}alert-info
+            {% endif %}
+            alert-dismissible fade show shadow-sm rounded-3"
+            role="alert">
+
+            {{ message }}
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+            <!-- Header -->
+            <div class="text-center mb-4">
+                <div class="mb-3">
+                    <i class="fas fa-shield-alt fa-4x text-primary bg-light p-3 rounded-circle shadow-sm"></i>
+                </div>
+                <h3 class="fw-bold mb-1">Multi-Factor Authentication (2FA)</h3>
+                <p class="text-muted mb-0">
+                    Secure your account using an Authenticator App like Google Authenticator.
+                </p>
+            </div>
+
+            <!-- User Info Card -->
+            <div class="card border-0 bg-light rounded-4 mb-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-circle fa-5x text-secondary mb-3"></i>
+                    <h5 class="fw-semibold mb-0">{{ request.user.email }}</h5>
+                    <small class="text-muted">Account Security Settings</small>
+                </div>
+            </div>
+
+            {% if not request.user.mfa_enabled %}
+            <!-- Enable 2FA Section -->
+            <div class="alert alert-info rounded-3 text-center">
+                Scan the QR code below with your Authenticator App
+                (Google Authenticator, Microsoft Authenticator, etc.)
+            </div>
+
+            <!-- QR Code -->
+            <div class="d-flex justify-content-center mb-4">
+                <div class="p-4 bg-white border rounded-4 shadow-sm">
+                    <img src="{{ qrcode }}" 
+                         alt="QR Code" 
+                         class="img-fluid"
+                         style="max-width: 220px;">
+                </div>
+            </div>
+
+            <!-- OTP Verification Form -->
+            <form method="POST" action="{% url 'verify-mfa' %}" class="mx-auto text-center" style="max-width: 350px;">
+                {% csrf_token %}
+                <input type="hidden" name="user_id" value="{{ request.user.id }}">
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        Enter 6-Digit OTP Code
+                    </label>
+                    <input type="text"
+                           id="otp_code"
+                           name="otp_code"
+                           maxlength="6"
+                           required
+                           class="form-control form-control-lg text-center rounded-3 shadow-sm"
+                           placeholder="••••••"
+                           style="letter-spacing: 8px; font-size: 20px;">
+                </div>
+
+                <button class="btn btn-primary w-100 py-2 rounded-pill fw-semibold shadow-sm"
+                        type="submit">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Verify & Enable 2FA
+                </button>
+            </form>
+
+            {% else %}
+            <!-- 2FA Enabled State -->
+            <div class="text-center">
+                <div class="alert alert-success rounded-3">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Two-Factor Authentication is enabled on your account.
+                </div>
+
+                <div class="mb-4">
+                    <i class="fas fa-lock fa-4x text-success bg-light p-3 rounded-circle shadow-sm"></i>
+                </div>
+
+                <a href="{% url 'disable-2fa' %}"
+                   class="btn btn-outline-danger px-4 py-2 rounded-pill fw-semibold shadow-sm">
+                    <i class="fas fa-times-circle me-2"></i>
+                    Disable 2FA
+                </a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+    </div>
+</div>
+{% endblock %}

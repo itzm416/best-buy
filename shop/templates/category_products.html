@@ -1,0 +1,69 @@
+{% extends 'account/base.html' %}
+{% load static %}
+
+{% block title %}Category Products{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <!-- Header -->
+
+    <div class="row">
+        <!-- Sidebar Filters -->
+        <div class="col-md-3 mb-4">
+            <div class="card p-3">
+                <h5 class="fw-bold mb-3">Filter by Brand</h5>
+                <div class="d-grid gap-2 mb-3">
+                    {% for brand in brands %}
+                        <a href="?{% if selected_price %}price={{ selected_price }}&{% endif %}brand={{ brand }}"
+                           class="btn btn-outline-primary btn-sm {% if selected_brand == brand %}active{% endif %}">
+                            {{ brand }}
+                        </a>
+                    {% endfor %}
+                </div>
+
+                <!-- Price Filter -->
+                <h5 class="fw-bold mb-3">Filter by Price</h5>
+                <div class="d-grid gap-2">
+                    {% for price_range in price_ranges %}
+                        <a href="?{% if selected_brand %}brand={{ selected_brand }}&{% endif %}price={{ price_range }}"
+                           class="btn btn-outline-primary btn-sm {% if selected_price == price_range %}active{% endif %}">
+                            {{ price_range }}$
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="col-md-9">
+            <div class="row g-4">
+                {% for product in products %}
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="card h-100 shadow-sm">
+                        <img src="{{ product.product_image.url }}" class="card-img-top mt-3" 
+                             style="height:180px; object-fit:cover;" alt="{{ product.title }}">
+                        <div class="card-body d-flex flex-column text-center">
+                            <h6 class="card-title">{{ product.title|truncatechars:25 }}</h6>
+                            <p class="text-danger">${{ product.discounted_price }}</p>
+                            <a href="{% url 'product' product.slug %}" class="btn btn-sm btn-outline-primary mt-auto">View</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No products found in this category.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+
+
+
+
+
+
+        
+        </div>
+    </div>
+</div>
+{% endblock %}

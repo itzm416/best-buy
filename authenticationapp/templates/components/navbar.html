@@ -1,0 +1,117 @@
+{% load socialaccount %}
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
+    <div class="container">
+
+        <!-- Logo / Brand -->
+        <a class="navbar-brand fw-bold fs-4 text-primary" href="{% url 'home' %}">
+            BestBuy
+        </a>
+
+        <!-- Mobile Toggle -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Content -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+
+            <!-- Left Menu -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 fw-semibold">
+                <!-- <li class="nav-item">
+                    <a href="{% url 'home' %}" class="nav-link px-3 text-dark">Home</a>
+                </li> -->
+                <!-- <li class="nav-item">
+                    <a href="#" class="nav-link px-3 text-dark">Shop</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link px-3 text-dark">About</a>
+                </li> -->
+            </ul>
+
+            <!-- Search Bar -->
+            <form class="d-flex me-3" role="search">
+                <input type="search" 
+                       class="form-control rounded-pill px-3" 
+                       placeholder="Search..." 
+                       aria-label="Search">
+            </form>
+
+            {% if user.is_authenticated %}
+            <!-- Cart Button -->
+<div class="me-3">
+    <a href="{% url 'add_to_cart' %}" class="btn position-relative fw-semibold px-4 py-2" style="border-radius: 50px;">
+        🛒 Cart
+        {% if cart_item_count %}
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ cart_item_count }}
+        </span>
+        {% endif %}
+    </a>
+</div>
+
+
+            <!-- User Dropdown -->
+            <div class="dropdown">
+                <a href="#" 
+                   class="d-flex align-items-center text-decoration-none dropdown-toggle" 
+                   data-bs-toggle="dropdown" 
+                   aria-expanded="false">
+
+                    {% with user.socialaccount_set.all.0 as social %}
+                        {% if social and social.extra_data.picture %}
+                            <img src="{{ social.extra_data.picture }}" 
+                                 alt="profile" 
+                                 width="40" 
+                                 height="40" 
+                                 class="rounded-circle border shadow-sm">
+                        {% else %}
+                            <img src="https://img.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3383.jpg" 
+                                 alt="profile" 
+                                 width="40" 
+                                 height="40" 
+                                 class="rounded-circle border shadow-sm">
+                        {% endif %}
+                    {% endwith %}
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-3 p-2">
+                    <li>
+                        <a class="dropdown-item rounded" href="#">
+                            👤 Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item rounded" href="{% url 'account-setting' %}">
+                            ⚙️ Settings
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button class="dropdown-item text-danger fw-semibold" type="submit">
+                                🚪 Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+
+            {% else %}
+
+            <!-- Auth Buttons -->
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-primary rounded-pill px-4 fw-semibold" 
+                   href="{% url 'login' %}">
+                    Login
+                </a>
+                <a class="btn btn-primary rounded-pill px-4 fw-semibold shadow-sm" 
+                   href="{% url 'register' %}">
+                    Sign Up
+                </a>
+            </div>
+
+            {% endif %}
+        </div>
+    </div>
+</nav>

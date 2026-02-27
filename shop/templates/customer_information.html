@@ -1,0 +1,57 @@
+{% extends "account/base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+                    <h3 class="mb-4 fw-bold text-center">
+                        Add Delivery Address
+                    </h3>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.name.label }}</label>
+                            {{ form.name }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.mobile_number.label }}</label>
+                            {{ form.mobile_number }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.locality.label }}</label>
+                            {{ form.locality }}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">{{ form.city.label }}</label>
+                                {{ form.city }}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">{{ form.zipcode.label }}</label>
+                                {{ form.zipcode }}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">{{ form.state.label }}</label>
+                            {{ form.state }}
+                        </div>
+
+                        <button type="submit" class="btn btn-dark w-100 rounded-3 py-2">
+                            Save Address
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

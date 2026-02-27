@@ -1,0 +1,152 @@
+{% extends "account/base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        
+        <!-- LEFT: Address Selection -->
+        <div class="col-lg-7">
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="fw-bold mb-0">Select Delivery Address</h4>
+                        <a href="{% url 'customer_info' %}" class="btn btn-outline-dark btn-sm rounded-3">
+                            + Add New Address
+                        </a>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        {% if customer_info %}
+                            {% for addr in customer_info %}
+                            <div class="form-check border rounded-3 p-3 mb-3">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="customer_id"
+                                       value="{{ addr.id }}"
+                                       required>
+                                
+                                <label class="form-check-label w-100">
+                                    <strong>{{ addr.name }}</strong> ({{ addr.mobile_number }}) <br>
+                                    {{ addr.locality }}, {{ addr.city }} - {{ addr.zipcode }} <br>
+                                    {{ addr.get_state_display }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No address found. Please add a new address.</p>
+                        {% endif %}
+
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Order Summary -->
+        <div class="col-lg-5">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4">Order Summary</h4>
+
+                    {% for item in cart_items %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>{{ item.product.title }} × {{ item.quantity }}</span>
+                        <span>₹ {{ item.product.discounted_price|floatformat:2 }}</span>
+                    </div>
+                    {% endfor %}
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between fw-bold fs-5">
+                        <span>Total Amount</span>
+                        <span>₹ {{ total_amount }}</span>
+                    </div>
+                    
+                    
+                    <button type="button" id="rzp-button1" class="btn btn-dark w-100">
+                        Pay Now
+                    </button>                    
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+    
+</div>
+</div>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    </script>
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    document.getElementById("rzp-button1").addEventListener("click", async function(e) {
+    
+        e.preventDefault();
+    
+        const selected = document.querySelector('input[name="customer_id"]:checked');
+    
+        if (!selected) {
+            alert("Please select an address");
+            return;
+        }
+    
+        const customerId = selected.value;
+    
+        let response = await fetch(`/checkout/`,{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: JSON.stringify({
+                customer_id: customerId
+            })
+        })
+    
+        let data = await response.json()
+    
+        var options = {
+            "key": data.razorpay_key_id,
+            "amount": data.amount,
+            "currency": "INR",
+            "name": "Best Buy",
+            "description": "Order Payment",
+            "order_id": data.order_id,
+            "callback_url": data.razorpay_callback_url,
+            "prefill": {
+                "email": data.user_email
+            }
+        };
+    
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+    });
+    </script>
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

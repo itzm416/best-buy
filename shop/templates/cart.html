@@ -1,0 +1,77 @@
+{% extends 'account/base.html' %}
+{% load static %}
+
+{% block title %}Shopping Cart{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4 fw-bold">Your Shopping Cart</h2>
+
+    {% if cart_items %}
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr>
+                            <td class="d-flex align-items-center">
+                                <img src="{{ item.product.product_image.url }}" alt="{{ item.product.title }}"
+                                     style="width:60px; height:60px; object-fit:cover;" class="me-3 rounded">
+                                <span>{{ item.product.title|truncatechars:30 }}</span>
+                            </td>
+                            <td>₹{{ item.product.discounted_price }}</td>
+
+                            <td>
+                                <div class="align-items-center justify-content-center">
+                                    <!-- Minus Button -->
+                                    <a href="{% url 'update_quantity' item.id %}?action=decrease"
+                                       class="btn btn-sm btn-outline-secondary">−</a>
+                            
+                                    <!-- Quantity Display -->
+                                    <span class="mx-2 fw-bold">{{ item.quantity }}</span>
+                            
+                                    <!-- Plus Button -->
+                                    <a href="{% url 'update_quantity' item.id %}?action=increase"
+                                       class="btn btn-sm btn-outline-secondary">+</a>
+                                </div>
+                            </td>
+                            
+                            <td>
+                                <a href="{% url 'delete_item' item.id %}" class="btn btn-sm btn-outline-danger">Remove</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Cart Total -->
+            <div class="d-flex justify-content-end mt-4">
+                <h5 class="fw-bold">Total: ₹{{ total_amount }}</h5>
+            </div>
+
+            <!-- Checkout Button -->
+            <div class="d-flex justify-content-end mt-3">
+                <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg">Proceed to Checkout</a>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="text-center py-5">
+        <h5 class="text-muted">Your cart is empty.</h5>
+        <a href="{% url 'home' %}" class="btn btn-outline-primary mt-3">Continue Shopping</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "account/base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            
+            <div class="card shadow border-0 rounded-4 text-center">
+                <div class="card-body p-5">
+
+                    <!-- Success Icon -->
+                    <div class="mb-4">
+                        <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center"
+                             style="width: 90px; height: 90px;">
+                            <i class="bi bi-check-circle-fill text-success" style="font-size: 48px;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Heading -->
+                    <h2 class="fw-bold text-success mb-3">
+                        Payment Successful 🎉
+                    </h2>
+
+                    <p class="text-muted mb-4">
+                        Your order has been verified and placed successfully.
+                        Thank you for shopping with us!
+                    </p>
+
+                    <hr class="my-4">
+
+                    <!-- Order Details -->
+                    <div class="text-start mb-4">
+                        <p class="mb-2">
+                            <strong>Order ID:</strong> {{ order.razorpay_order_id }}
+                        </p>
+                        <p class="mb-2">
+                            <strong>Payment ID:</strong> {{ order.razorpay_payment_id }}
+                        </p>
+                        <p class="mb-2">
+                            <strong>Total Amount:</strong> ₹ {{ order.total_amount }}
+                        </p>
+                        <p class="mb-0">
+                            <strong>Status:</strong> 
+                            <span class="badge bg-success">Verified</span>
+                        </p>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-grid gap-2">
+                        <a href="/" class="btn btn-outline-secondary rounded-3">
+                            Continue Shopping
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Icons (for check icon) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+{% endblock %}

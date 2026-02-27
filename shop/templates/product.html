@@ -1,0 +1,68 @@
+{% extends "account/base.html" %}
+
+{% block content %}
+<div class="row mt-5">
+    <!-- Product Image -->
+    <div class="col-md-6 text-center mb-4">
+        <div class="card shadow-sm">
+            <img src="{{ product.product_image.url }}" class="card-img-top img-fluid product-image" alt="Product Image">
+        </div>
+    </div>
+
+    <!-- Product Details -->
+    <div class="col-md-6">
+        <h2 class="fw-bold">{{product.title}}</h2>
+        <p class="text-muted">Brand: {{product.brand}}</p>
+
+        <!-- Price -->
+        <h4 class="product-price">
+            <span class="text-decoration-line-through text-secondary">₹ {{product.selling_price}}</span>
+            <span class="text-danger fw-bold ms-2">₹ {{product.discounted_price}}</span>
+        </h4>
+
+        <!-- Description -->
+        <p class="mt-4">
+            {{product.description}}
+        </p>
+
+        <!-- Action Buttons -->
+        <div class="mt-4">
+            <a href="/cart/?slug={{product.slug}}" 
+            class="btn btn-primary btn-lg w-100">
+            <i class="bi bi-cart-plus"></i> Add to Cart
+            </a>
+            <button class="btn btn-outline-secondary btn-lg">Back to Shop</button>
+        </div>
+    </div>
+</div>
+
+<!-- Related Products -->
+<div class="mt-5">
+    <h3 class="mb-4">Related Products</h3>
+    <div class="row">
+
+        {% for relatedproducts in related_products %}
+
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm related-card">
+                <img src="{{ relatedproducts.product_image.url }}" class="card-img-top" alt="Related Product">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Product 1</h6>
+                    <p class="text-danger fw-bold">$79.99</p>
+                    <a href="{% url 'product' relatedproducts.slug %}" class="btn btn-sm btn-outline-primary">
+                        View
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+    
+    </div>
+</div>
+
+<style>
+    .product-image { max-height: 400px; object-fit: cover; }
+    .related-card img { height: 150px; object-fit: cover; }
+</style>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends "account/base.html" %}
+{% load static %}
+
+{% block title %}Account Settings{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+
+        <!-- LEFT SIDEBAR -->
+        <div class="col-lg-3 mb-4">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-3">
+
+                    <!-- User Info -->
+                    <div class="text-center mb-4">
+                        {% if user.socialaccount_set.all.0.extra_data.picture %}
+                            <img src="{{ user.socialaccount_set.all.0.extra_data.picture }}"
+                                 class="rounded-circle shadow mb-2"
+                                 width="80" height="80" alt="profile">
+                        {% else %}
+                            <img src="https://img.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3383.jpg"
+                                 class="rounded-circle shadow mb-2"
+                                 width="80" height="80" alt="profile">
+                        {% endif %}
+                        <h6 class="fw-bold mb-0">{{ user.email }}</h6>
+                        <small class="text-muted">Account Settings</small>
+                    </div>
+
+                    <hr>
+
+                    <!-- Settings Menu -->
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'account-setting' %}"
+                           class="list-group-item list-group-item-action rounded-3 mb-2 active">
+                            👤 Personal Details
+                        </a>
+
+                        <a href="{% url 'change-password' %}"
+                           class="list-group-item list-group-item-action rounded-3 mb-2 ">
+                            🔒 Change Password
+                        </a>
+
+                        <a href="{% url 'mfa' %}"
+                           class="list-group-item list-group-item-action rounded-3">
+                            🛡️ MFA / 2FA Security
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT CONTENT (ACCOUNT OVERVIEW - DEFAULT) -->
+<div class="col-lg-9">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-4 p-md-5">
+
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold mb-1">Account Overview</h3>
+                    <p class="text-muted mb-0">
+                        Manage your account information and security settings.
+                    </p>
+                </div>
+                <span class="badge bg-primary px-3 py-2 rounded-pill">
+                    Active Account
+                </span>
+            </div>
+
+            <!-- Profile Info Card -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body d-flex align-items-center gap-4">
+
+                    <!-- Avatar -->
+                    {% if user.socialaccount_set.all.0.extra_data.picture %}
+                        <img src="{{ user.socialaccount_set.all.0.extra_data.picture }}"
+                             class="rounded-circle shadow"
+                             width="90" height="90" alt="profile">
+                    {% else %}
+                        <img src="https://img.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3383.jpg"
+                             class="rounded-circle shadow"
+                             width="90" height="90" alt="profile">
+                    {% endif %}
+
+                    <!-- User Details -->
+                    <div>
+                        <h5 class="fw-bold mb-1">{{ user.email }}</h5>
+                        <p class="text-muted mb-2">Primary Email Address</p>
+
+                        <div class="d-flex gap-2 flex-wrap">
+                            {% if user.is_authenticated %}
+                                <span class="badge bg-success">Verified</span>
+                            {% endif %}
+
+                            {% if user.mfa_enabled %}
+                                <span class="badge bg-success">2FA Enabled</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">2FA Disabled</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Account Stats -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 text-center p-3">
+                        <h6 class="text-muted">Account Type</h6>
+                        <h5 class="fw-bold">Standard</h5>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 text-center p-3">
+                        <h6 class="text-muted">Security Level</h6>
+                        {% if user.mfa_enabled %}
+                            <h5 class="fw-bold text-success">High</h5>
+                        {% else %}
+                            <h5 class="fw-bold text-warning">Medium</h5>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 text-center p-3">
+                        <h6 class="text-muted">Member Since</h6>
+                        <h5 class="fw-bold">
+                            {{ user.created_at|date:"M Y" }}
+                        </h5>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Quick Actions</h5>
+
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="{% url 'account-setting' %}?tab=personal"
+                           class="btn btn-outline-primary rounded-pill px-4">
+                            👤 Edit Profile
+                        </a>
+
+                        <a href="{% url 'change-password' %}"
+                           class="btn btn-outline-dark rounded-pill px-4">
+                            🔒 Change Password
+                        </a>
+
+                        <a href="{% url 'mfa' %}"
+                           class="btn btn-outline-success rounded-pill px-4">
+                            🛡️ Security Settings
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+    </div>
+</div>
+{% endblock %}
